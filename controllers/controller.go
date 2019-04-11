@@ -8,6 +8,8 @@ import (
 	"net/http"
 )
 
+
+//Return a single challenge
 func GetChallenge(c *gin.Context) {
 
 	id := c.Param("id")
@@ -20,6 +22,7 @@ func GetChallenge(c *gin.Context) {
 	c.JSON(200, challenge)
 }
 
+//Return all the challenges
 func GetChallenges(c *gin.Context) {
 
 	var challenges []models.Challenge
@@ -28,6 +31,7 @@ func GetChallenges(c *gin.Context) {
 	c.JSON(200, challenges)
 }
 
+//Create a single challenge
 func CreateChallenge(c *gin.Context) {
 	var challenge models.Challenge
 	var db = db.GetDB()
@@ -42,6 +46,8 @@ func CreateChallenge(c *gin.Context) {
 	c.JSON(http.StatusOK, &challenge)
 }
 
+
+//Update a single challenge by id
 func UpdateChallenge(c *gin.Context) {
 	id := c.Param("id")
 	var challenge models.Challenge
@@ -56,6 +62,8 @@ func UpdateChallenge(c *gin.Context) {
 	c.JSON(http.StatusOK, &challenge)
 }
 
+
+//Delete a challenge by ID
 func DeleteChallenge(c *gin.Context) {
 	id := c.Param("id")
 	var challenge models.Challenge
@@ -69,6 +77,7 @@ func DeleteChallenge(c *gin.Context) {
 	db.Delete(&challenge)
 }
 
+//Get a single user
 func GetUser(c *gin.Context) {
 
 	id := c.Param("id")
@@ -81,6 +90,7 @@ func GetUser(c *gin.Context) {
 	c.JSON(200, user)
 }
 
+//Validate jwt is working correctly
 func AuthCheck(c *gin.Context) {
 	// the JWT middleware provides a useful method to extract
 	// custom claims, it's basically the reverse of what's being

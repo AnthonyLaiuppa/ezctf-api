@@ -55,10 +55,10 @@ func main() {
 		}
 	}
 
-	v1_auth := r.Group("/api/v1/secret/")
-	v1_auth.Use(jwtMiddleware.MiddlewareFunc())
+	v1Auth := r.Group("/api/v1/secret/")
+	v1Auth.Use(jwtMiddleware.MiddlewareFunc())
 	{
-		v1_auth.GET("/", Controller.AuthCheck)
+		v1Auth.GET("/", Controller.AuthCheck)
 	}
 
 	r.Run()

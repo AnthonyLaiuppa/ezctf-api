@@ -19,7 +19,7 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
-// Init creates a connection to mysql database and
+// Init creates a connection to postgres database and
 // migrates any new models
 func Init() {
 
@@ -67,6 +67,8 @@ func GetDB() *gorm.DB {
 	return db
 }
 
+
+//CloseDB ... add trigger for server graceful stop
 func CloseDB() {
 	db.Close()
 }
