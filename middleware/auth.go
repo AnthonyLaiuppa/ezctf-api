@@ -1,20 +1,19 @@
 package middleware
 
 import (
-  "net/http"
-  "github.com/gin-gonic/gin"
-  "github.com/AnthonyLaiuppa/ezctf-api/db"
-  "github.com/AnthonyLaiuppa/ezctf-api/models"
-  jwt "gopkg.in/appleboy/gin-jwt.v2"
+	"github.com/AnthonyLaiuppa/ezctf-api/db"
+	"github.com/AnthonyLaiuppa/ezctf-api/models"
+	"github.com/gin-gonic/gin"
+	jwt "gopkg.in/appleboy/gin-jwt.v2"
+	"net/http"
 )
 
-
 type Login struct {
-	Email     string `form:"email" json:"Email" binding:"required"`
+	Email    string `form:"email" json:"Email" binding:"required"`
 	Password string `form:"password" json:"Password"  binding:"required"`
 }
 
-func Payload(data interface{}) jwt.MapClaims{
+func Payload(data interface{}) jwt.MapClaims {
 	// in this method, you'd want to fetch some user info
 	// based on their email address (which is provided once
 	// they've successfully logged in).  the information
@@ -37,7 +36,7 @@ func Authenticate(c *gin.Context) (interface{}, error) {
 	}
 
 	db := db.GetDB()
- 	if err := db.Where("Email = ?", json.Email).First(&user).Error; err != nil {
+	if err := db.Where("Email = ?", json.Email).First(&user).Error; err != nil {
 		return "", jwt.ErrMissingLoginValues
 	}
 	c.ShouldBindJSON(&user)
@@ -47,6 +46,6 @@ func Authenticate(c *gin.Context) (interface{}, error) {
 	} else if json.Email == user.Email && json.Password == user.Password {
 		return &user, nil
 	}
-	
+
 	return "", jwt.ErrFailedAuthentication
 }
