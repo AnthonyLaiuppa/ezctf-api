@@ -41,9 +41,6 @@ func main() {
 		challenge := v1.Group("/challenge")
 		{
 			challenge.GET("/:id", Controller.GetChallenge)
-			challenge.POST("/", Controller.CreateChallenge)
-			challenge.PUT("/:id", Controller.UpdateChallenge)
-			challenge.DELETE("/:id", Controller.DeleteChallenge)
 		}
 		challenges := v1.Group("/challenges")
 		{
@@ -59,6 +56,20 @@ func main() {
 	v1Auth.Use(jwtMiddleware.MiddlewareFunc())
 	{
 		v1Auth.GET("/", Controller.AuthCheck)
+	}
+
+	modify := r.Group("/api/v1/modify/challenge")
+	modify.Use(jwtMiddleware.MiddlewareFunc())
+	{
+		modify.POST("/", Controller.CreateChallenge)
+		modify.PUT("/:id", Controller.UpdateChallenge)
+		modify.DELETE("/:id", Controller.DeleteChallenge)
+	}
+
+	solve := r.Group("/api/v1/solve/challenge")
+	solve.Use(jwtMiddleware.MiddlewareFunc())
+	{
+		solve.POST("/:id", Controller.SolveChallenge)
 	}
 
 	r.Run()

@@ -19,7 +19,7 @@ type User struct {
 	Elevated  bool      `json:"elevated" binding:"required" gorm:"default:'false'"`
 }
 
-//Set UUID and CreatedAtTime 
+//BeforeCreate ...
 func (user *User) BeforeCreate(scope *gorm.Scope) error {
 	scope.SetColumn("CreatedAt", time.Now())
 	u := uuid.Must(uuid.NewV4())
@@ -27,7 +27,7 @@ func (user *User) BeforeCreate(scope *gorm.Scope) error {
 	return nil
 }
 
-//Set UpdatedTime
+//BeforeUpdate ...
 func (user *User) BeforeUpdate(scope *gorm.Scope) error {
 	scope.SetColumn("UpdatedAt", time.Now())
 	return nil

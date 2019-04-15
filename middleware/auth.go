@@ -8,14 +8,13 @@ import (
 	"net/http"
 )
 
-//Struct for binding login form
+//Login ...
 type Login struct {
 	Email    string `form:"email" json:"Email" binding:"required"`
 	Password string `form:"password" json:"Password"  binding:"required"`
 }
 
-
-//Map username and permissions to taken claims
+//Payload ...
 func Payload(data interface{}) jwt.MapClaims {
 	// in this method, you'd want to fetch some user info
 	// based on their email address (which is provided once
@@ -31,7 +30,7 @@ func Payload(data interface{}) jwt.MapClaims {
 	return jwt.MapClaims{}
 }
 
-//Logic for validating authentication - Adding Bcrypt soon
+//Authenticate ...
 func Authenticate(c *gin.Context) (interface{}, error) {
 	var user models.User
 	var json Login

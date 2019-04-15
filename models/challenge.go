@@ -17,9 +17,10 @@ type Challenge struct {
 	Points    int       `json:"Points" binding:"required"`
 	Author    string    `json:"Author" binding:"required"`
 	RawText   string    `json:"RawText" binding:"required"`
+	Flag      string    `json:"Flag" binding:"required"`
 }
 
-//Set UUID and CreatedAtTime 
+//BeforeCreate ...
 func (challenge *Challenge) BeforeCreate(scope *gorm.Scope) error {
 	scope.SetColumn("CreatedAt", time.Now())
 	u := uuid.Must(uuid.NewV4())
@@ -27,7 +28,7 @@ func (challenge *Challenge) BeforeCreate(scope *gorm.Scope) error {
 	return nil
 }
 
-//Set UpdatedTime
+//BeforeUpdate ...
 func (challenge *Challenge) BeforeUpdate(scope *gorm.Scope) error {
 	scope.SetColumn("UpdatedAt", time.Now())
 	return nil

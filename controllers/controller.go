@@ -8,8 +8,7 @@ import (
 	"net/http"
 )
 
-
-//Return a single challenge
+//GetChallenge ...
 func GetChallenge(c *gin.Context) {
 
 	id := c.Param("id")
@@ -22,7 +21,7 @@ func GetChallenge(c *gin.Context) {
 	c.JSON(200, challenge)
 }
 
-//Return all the challenges
+//GetChallenges ...
 func GetChallenges(c *gin.Context) {
 
 	var challenges []models.Challenge
@@ -31,7 +30,7 @@ func GetChallenges(c *gin.Context) {
 	c.JSON(200, challenges)
 }
 
-//Create a single challenge
+//CreateChallenge ...
 func CreateChallenge(c *gin.Context) {
 	var challenge models.Challenge
 	var db = db.GetDB()
@@ -46,8 +45,7 @@ func CreateChallenge(c *gin.Context) {
 	c.JSON(http.StatusOK, &challenge)
 }
 
-
-//Update a single challenge by id
+//UpdateChallenge ...
 func UpdateChallenge(c *gin.Context) {
 	id := c.Param("id")
 	var challenge models.Challenge
@@ -62,8 +60,7 @@ func UpdateChallenge(c *gin.Context) {
 	c.JSON(http.StatusOK, &challenge)
 }
 
-
-//Delete a challenge by ID
+//DeleteChallenge ...
 func DeleteChallenge(c *gin.Context) {
 	id := c.Param("id")
 	var challenge models.Challenge
@@ -77,7 +74,7 @@ func DeleteChallenge(c *gin.Context) {
 	db.Delete(&challenge)
 }
 
-//Get a single user
+//GetUser ...
 func GetUser(c *gin.Context) {
 
 	id := c.Param("id")
@@ -90,7 +87,7 @@ func GetUser(c *gin.Context) {
 	c.JSON(200, user)
 }
 
-//Validate jwt is working correctly
+//AuthCheck ...
 func AuthCheck(c *gin.Context) {
 	// the JWT middleware provides a useful method to extract
 	// custom claims, it's basically the reverse of what's being
@@ -102,4 +99,71 @@ func AuthCheck(c *gin.Context) {
 	// handler to intercept this information and provide an
 	// additional level of role-based security
 	c.String(http.StatusOK, "id: %s\nrole: %s", claims["username"], claims["elevated"])
+}
+
+//Solve ...
+type Solve struct {
+	Flag string `form:"flag" json:"Flag" binding"required"`
+}
+
+//SolveChallenge ...
+func SolveChallenge(c *gin.Context) {
+
+	//First check that JSON received binds
+	var s Solve
+	if err := c.BindJSON(&s); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	//Next grab information on challenge and user
+	id := c.Param("id")
+	claims := jwt.ExtractClaims(c)
+	var user models.User
+	var challenge models.Challenge
+	db := db.GetDB()
+
+	if err := db.Where("UserName = ?", claims["username"]).First(&user).Error; err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	if err := db.Where("ID = ?", id).First(&challenge).Error; err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	//Make sure flags match and user hasnt already solved
+	if s.Flag == challenge.Flag && user.hasntSolved == true {
+		user.Score = user.Score + challenge.Points
+		user.Solves = user.Solves + challenge.ID + ','
+		challenge.Solves++
+
+		c.BindJSON(&challenge)
+		db.Save(&challenge)
+
+		c.BindJSON(&user)
+		db.Save(&user)
+		c.JSON(http.StatusOK, &challenge)
+	}
+
+	c.AbortWithStatus(http.StatusBadRequest)
+
+}
+
+//HasntSolved ...
+func (user *User) hasntSolved(id string) bool {
+
+	s := strings.Split(user.Solves, ",")
+	return stringInSlice(id, s)
+
+}
+
+// stringInSlice ...
+func stringInSlice(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
 }

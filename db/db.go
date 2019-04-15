@@ -67,7 +67,6 @@ func GetDB() *gorm.DB {
 	return db
 }
 
-
 //CloseDB ... add trigger for server graceful stop
 func CloseDB() {
 	db.Close()
