@@ -3,6 +3,8 @@
 ### Overview
 ---
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/AnthonyLaiuppa/ezctf-api)](https://goreportcard.com/report/github.com/AnthonyLaiuppa/ezctf-api)
+
 This is the API written to accompany [the ReactJS front end portion](https://github.com/AnthonyLaiuppa/ezctf-react) of the EZCTF - Webapp.
 
 A continuation of [my EZCTF app from last year.](https://github.com/AnthonyLaiuppa/ezctf) 

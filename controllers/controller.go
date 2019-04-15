@@ -103,7 +103,7 @@ func AuthCheck(c *gin.Context) {
 
 //Solve ...
 type Solve struct {
-	Flag string `form:"flag" json:"Flag" binding"required"`
+	Flag string `form:"flag" json:"Flag" binding:"required"`
 }
 
 //SolveChallenge ...
