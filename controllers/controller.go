@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	jwt "gopkg.in/appleboy/gin-jwt.v2"
 	"net/http"
+	"strings"
 )
 
 //GetChallenge ...
@@ -133,9 +134,9 @@ func SolveChallenge(c *gin.Context) {
 	}
 
 	//Make sure flags match and user hasnt already solved
-	if s.Flag == challenge.Flag && user.hasntSolved == true {
+	if s.Flag == challenge.Flag && user.HasntSolved(challenge.ID) == true {
 		user.Score = user.Score + challenge.Points
-		user.Solves = user.Solves + challenge.ID + ','
+		user.Solves = strings.Join([]string{user.Solves, challenge.ID.String()}, ",") 
 		challenge.Solves++
 
 		c.BindJSON(&challenge)
@@ -150,20 +151,4 @@ func SolveChallenge(c *gin.Context) {
 
 }
 
-//HasntSolved ...
-func (user *User) hasntSolved(id string) bool {
 
-	s := strings.Split(user.Solves, ",")
-	return stringInSlice(id, s)
-
-}
-
-// stringInSlice ...
-func stringInSlice(a string, list []string) bool {
-	for _, b := range list {
-		if b == a {
-			return true
-		}
-	}
-	return false
-}

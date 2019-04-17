@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/satori/go.uuid"
 	"time"
+	"strings"
 )
 
 // User "Object
@@ -31,4 +32,24 @@ func (user *User) BeforeCreate(scope *gorm.Scope) error {
 func (user *User) BeforeUpdate(scope *gorm.Scope) error {
 	scope.SetColumn("UpdatedAt", time.Now())
 	return nil
+}
+
+//HasntSolved ...
+func (user *User) HasntSolved(id uuid.UUID) bool {
+
+	//Check to avoid duplicate correct submission
+	i := id.String()
+	s := strings.Split(user.Solves, ",")
+	return stringInSlice(i, s)
+
+}
+
+// stringInSlice ...
+func stringInSlice(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
 }
