@@ -7,6 +7,7 @@ import (
 	jwt "gopkg.in/appleboy/gin-jwt.v2"
 	"net/http"
 	"strings"
+	"fmt"
 )
 
 //GetChallenge ...
@@ -118,33 +119,39 @@ func SolveChallenge(c *gin.Context) {
 	}
 
 	//Next grab information on challenge and user
-	id := c.Param("id")
 	claims := jwt.ExtractClaims(c)
+	id := c.Param("id")
+	un := claims["username"]
 	var user models.User
 	var challenge models.Challenge
 	db := db.GetDB()
 
-	if err := db.Where("UserName = ?", claims["username"]).First(&user).Error; err != nil {
+	if err := db.Where("user_name = ?", un).First(&user).Error; err != nil {
+
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	if err := db.Where("ID = ?", id).First(&challenge).Error; err != nil {
+	if err := db.Where("id = ?", id).First(&challenge).Error; err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
 	//Make sure flags match and user hasnt already solved
+	fmt.Println(challenge.Flag)
+	fmt.Println(s.Flag)
 	if s.Flag == challenge.Flag && user.HasntSolved(challenge.ID) == true {
 		user.Score = user.Score + challenge.Points
 		user.Solves = strings.Join([]string{user.Solves, challenge.ID.String()}, ",") 
 		challenge.Solves++
-
+		
 		c.BindJSON(&challenge)
 		db.Save(&challenge)
 
 		c.BindJSON(&user)
+
 		db.Save(&user)
 		c.JSON(http.StatusOK, &challenge)
+		return
 	}
 
 	c.AbortWithStatus(http.StatusBadRequest)

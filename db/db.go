@@ -47,7 +47,7 @@ func Init() {
 
 	db.AutoMigrate(&models.Challenge{})
 	db.AutoMigrate(&models.User{})
-	db.Create(&models.User{UserName: "floridamane", Password: "testingstuff", Email: "registereduser@email.com", Score: 150, Solves: "uuid-uuid-uuid-uuid", Elevated: false})
+	db.Create(&models.User{UserName: "floridamane", Password: "testingstuff", Email: "registereduser@email.com", Score: 0, Solves: "uuid-uuid-uuid-uuid", Elevated: false})
 	db.Create(&models.Challenge{Name: "babys first stack", Category: "reverse", Solves: 10, Points: 150, Author: "FloridaMane", RawText: "This is challenge 1.",Flag:"ezctf{flag1}"})
 	db.Create(&models.Challenge{Name: "reverse2", Category: "reverse", Solves: 10, Points: 200, Author: "FloridaMane", RawText: "This is challenge 2.",Flag:"ezctf{flag2}"})
 	db.Create(&models.Challenge{Name: "reverse3", Category: "reverse", Solves: 16, Points: 250, Author: "FloridaMane", RawText: "This is challenge 3.",Flag:"ezctf{flag3}"})

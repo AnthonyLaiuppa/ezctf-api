@@ -12,7 +12,7 @@ type User struct {
 	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
-	UserName  string    `json:"username" binding:"required"`
+	UserName  string    `json:"user_name" binding:"required"`
 	Password  string    `json:"password" binding:"required"`
 	Email     string    `json:"email" binding:"required"`
 	Score     int       `json:"score" binding:"required"`
@@ -48,8 +48,8 @@ func (user *User) HasntSolved(id uuid.UUID) bool {
 func stringInSlice(a string, list []string) bool {
 	for _, b := range list {
 		if b == a {
-			return true
+			return false
 		}
 	}
-	return false
+	return true
 }

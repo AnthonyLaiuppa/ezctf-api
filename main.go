@@ -19,6 +19,7 @@ func main() {
 	r := gin.Default()
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000"}
+	config.AllowHeaders = []string{"Origin, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization, Content-Type"}
 	r.Use(cors.New(config))
 
 	jwtMiddleware := &jwt.GinJWTMiddleware{
