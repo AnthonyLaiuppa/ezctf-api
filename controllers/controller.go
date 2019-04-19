@@ -7,7 +7,6 @@ import (
 	jwt "gopkg.in/appleboy/gin-jwt.v2"
 	"net/http"
 	"strings"
-	"fmt"
 )
 
 //GetChallenge ...
@@ -127,7 +126,6 @@ func SolveChallenge(c *gin.Context) {
 	db := db.GetDB()
 
 	if err := db.Where("user_name = ?", un).First(&user).Error; err != nil {
-
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
@@ -136,26 +134,26 @@ func SolveChallenge(c *gin.Context) {
 		return
 	}
 
+
+	uhs := user.HasntSolved(challenge.ID)
 	//Make sure flags match and user hasnt already solved
-	fmt.Println(challenge.Flag)
-	fmt.Println(s.Flag)
-	if s.Flag == challenge.Flag && user.HasntSolved(challenge.ID) == true {
+	if s.Flag == challenge.Flag && uhs == true {
+
 		user.Score = user.Score + challenge.Points
 		user.Solves = strings.Join([]string{user.Solves, challenge.ID.String()}, ",") 
 		challenge.Solves++
-		
-		c.BindJSON(&challenge)
+
 		db.Save(&challenge)
-
-		c.BindJSON(&user)
-
 		db.Save(&user)
 		c.JSON(http.StatusOK, &challenge)
 		return
+	}else if uhs == false {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
 	}
 
-	c.AbortWithStatus(http.StatusBadRequest)
-
+	c.AbortWithStatus(http.StatusNotAcceptable )
+	return
 }
 
 
